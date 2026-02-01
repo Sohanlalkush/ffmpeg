@@ -1,0 +1,10 @@
+{
+  "name": "ffmpeg-api",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "dependencies": {
+    "fastify": "^4.28.0",
+    "multiparty": "^4.2.2"
+  }
+}
