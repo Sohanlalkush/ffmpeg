@@ -1,23 +1,20 @@
 FROM node:20-alpine
 
-# Install ffmpeg + fonts
+# Install ffmpeg + fonts (Alpine compatible)
 RUN apk add --no-cache \
     ffmpeg \
     fontconfig \
     ttf-dejavu \
-    noto-fonts \
-    noto-fonts-extra
+    font-noto-devanagari
 
-# App directory
 WORKDIR /app
 
-# Copy API code
 COPY package.json ./
 RUN npm install --only=production
 
 COPY . .
 
-# Temp directory for processing
+# Temp directory for ffmpeg
 RUN mkdir -p /tmp/ffmpeg
 
 ENV TMPDIR=/tmp/ffmpeg
