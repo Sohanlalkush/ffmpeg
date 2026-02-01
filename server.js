@@ -8,6 +8,11 @@ import multiparty from "multiparty";
 const app = Fastify();
 const TMP_DIR = "/tmp/ffmpeg";
 
+// ✅ FIX: Tell Fastify to accept multipart/form-data
+app.addContentTypeParser('multipart/form-data', function (request, payload, done) {
+  done(null);
+});
+
 // Ensure temp dir exists
 fs.mkdirSync(TMP_DIR, { recursive: true });
 
@@ -30,7 +35,7 @@ function cleanup() {
 // ------------------ STEP 1: Merge Audio ------------------
 app.post("/merge-audio", async (req, reply) => {
   const form = new multiparty.Form({ uploadDir: TMP_DIR });
-  form.parse(req, async (err, fields, files) => {
+  form.parse(req.raw, async (err, fields, files) => {  // ✅ Changed req to req.raw
     if (err) return reply.status(500).send(err.message);
     try {
       const audioFiles = await saveFiles(files.files);
@@ -64,7 +69,7 @@ app.post("/merge-audio", async (req, reply) => {
 // ------------------ STEP 2: Images + Audio → Video ------------------
 app.post("/images-to-video", async (req, reply) => {
   const form = new multiparty.Form({ uploadDir: TMP_DIR });
-  form.parse(req, async (err, fields, files) => {
+  form.parse(req.raw, async (err, fields, files) => {  // ✅ Changed req to req.raw
     if (err) return reply.status(500).send(err.message);
     try {
       const audioFile = await saveFiles(files.audio);
@@ -105,7 +110,7 @@ app.post("/images-to-video", async (req, reply) => {
 // ------------------ STEP 3: Burn Captions ------------------
 app.post("/burn-captions", async (req, reply) => {
   const form = new multiparty.Form({ uploadDir: TMP_DIR });
-  form.parse(req, async (err, fields, files) => {
+  form.parse(req.raw, async (err, fields, files) => {  // ✅ Changed req to req.raw
     if (err) return reply.status(500).send(err.message);
     try {
       const videoFile = await saveFiles(files.video);
