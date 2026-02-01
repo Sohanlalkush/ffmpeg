@@ -12,7 +12,7 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 # Copy API code
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN npm install --only=production
 
 COPY . .
